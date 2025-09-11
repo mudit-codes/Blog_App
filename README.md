@@ -29,6 +29,3 @@ This project is perfect for learning Flask, showcasing a portfolio, or even depl
 - SQLite database inside `instance/blog.db`
 
 ---
-
-## Folder Structure
-
