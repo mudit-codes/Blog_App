@@ -1,0 +1,3 @@
+/* Option A: Download Bootstrap 5 and place minified CSS here.
+   Option B: Remove this file and rely on CDN in base.html (already present for JS).
+   For quick dev, using CDN is easiest. */

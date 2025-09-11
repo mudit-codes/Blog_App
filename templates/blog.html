@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %}Blog{% endblock %}
+{% block content %}
+<h2>All Posts</h2>
+{% for post in posts %}
+  <div class="card mb-3">
+    <div class="card-body">
+      <h4>{{ post.title }}</h4>
+      <p>{{ post.content[:200] }}{% if post.content|length > 200 %}...{% endif %}</p>
+      <small class="text-muted">By {{ post.author.username if post.author else 'Unknown' }} • {{ post.created_at.strftime('%d %b %Y') }}</small>
+      <div class="mt-2">
+        <a class="btn btn-sm btn-outline-primary" href="{{ url_for('post_view', post_id=post.id) }}">Read</a>
+        {% if current_user.is_authenticated and (post.author == current_user or current_user.is_admin) %}
+          <a class="btn btn-sm btn-secondary" href="{{ url_for('edit', post_id=post.id) }}">Edit</a>
+          <form method="post" action="{{ url_for('delete', post_id=post.id) }}" style="display:inline;">
+            <button class="btn btn-sm btn-danger" onclick="return confirm('Delete this post?')">Delete</button>
+          </form>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+{% else %}
+  <p>No posts yet.</p>
+{% endfor %}
+{% endblock %}

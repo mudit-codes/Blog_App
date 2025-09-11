@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Contact Messages</h2>
+{% for m in messages %}
+  <div class="card mb-2">
+    <div class="card-body">
+      <h5>{{ m.name }} <small class="text-muted">{{ m.email }}</small></h5>
+      <p>{{ m.message }}</p>
+      <small class="text-muted">{{ m.created_at.strftime('%d %b %Y %H:%M') }}</small>
+    </div>
+  </div>
+{% else %}
+  <p>No messages yet.</p>
+{% endfor %}
+{% endblock %}

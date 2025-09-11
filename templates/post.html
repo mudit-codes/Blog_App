@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block title %}{{ post.title }}{% endblock %}
+{% block content %}
+<article>
+  <h2>{{ post.title }}</h2>
+  <p class="text-muted">By {{ post.author.username if post.author else 'Unknown' }} • {{ post.created_at.strftime('%d %b %Y') }}</p>
+  <div>{{ post.content | replace('\n', '<br>') | safe }}</div>
+</article>
+<a class="btn btn-secondary mt-3" href="{{ url_for('blog') }}">⬅ Back to Blog</a>
+{% endblock %}

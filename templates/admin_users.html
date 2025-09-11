@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Users</h2>
+<table class="table table-striped">
+  <thead><tr><th>Username</th><th>Email</th><th>Joined</th><th>Role</th><th>Actions</th></tr></thead>
+  <tbody>
+    {% for u in users %}
+    <tr>
+      <td>{{ u.username }}</td>
+      <td>{{ u.email }}</td>
+      <td>{{ u.created_at.strftime('%d %b %Y') }}</td>
+      <td>{% if u.is_admin %}<span class="badge bg-primary">Admin</span>{% else %}<span class="badge bg-secondary">User</span>{% endif %}</td>
+      <td>
+        {% if not u.is_admin %}
+          <form method="post" action="{{ url_for('admin_delete_user', user_id=u.id) }}" style="display:inline;">
+            <button class="btn btn-sm btn-danger" onclick="return confirm('Delete user?')">Delete</button>
+          </form>
+        {% else %}
+          <span class="text-muted">Protected</span>
+        {% endif %}
+        {% if current_user.is_admin and u.id != current_user.id %}
+          <form method="post" action="{{ url_for('admin_toggle_admin', user_id=u.id) }}" style="display:inline; margin-left:6px;">
+            <button class="btn btn-sm btn-outline-primary">
+              {% if u.is_admin %}Demote{% else %}Promote{% endif %}
+            </button>
+          </form>
+        {% endif %}
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}
