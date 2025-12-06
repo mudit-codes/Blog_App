@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block title %}About{% endblock %}
+{% block content %}
+<div class="p-5 mb-4 bg-light rounded-3">
+  <h1>About FlaskBlog</h1>
+  <p class="lead mt-3">
+    FlaskBlog is a modern, feature-rich blogging platform built with Flask, 
+    designed to showcase best practices in web development.
+  </p>
+</div>
+
+<div class="row">
+  <div class="col-md-6">
+    <h3>Features</h3>
+    <ul>
+      <li>User authentication and authorization</li>
+      <li>Create, edit, and delete blog posts</li>
+      <li>Admin panel for user management</li>
+      <li>Contact form with message tracking</li>
+      <li>Responsive design with Bootstrap 5</li>
+      <li>Secure password hashing</li>
+    </ul>
+  </div>
+  <div class="col-md-6">
+    <h3>Technology Stack</h3>
+    <ul>
+      <li>Flask - Web framework</li>
+      <li>SQLAlchemy - Database ORM</li>
+      <li>Flask-Login - User authentication</li>
+      <li>Flask-WTF - Form handling</li>
+      <li>Bootstrap 5 - UI framework</li>
+      <li>SQLite - Database</li>
+    </ul>
+  </div>
+</div>
+{% endblock %}

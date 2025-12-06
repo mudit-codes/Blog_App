@@ -1,9 +1,32 @@
 {% extends "base.html" %}
+{% block title %}Create Post{% endblock %}
 {% block content %}
-<h2>Create Post</h2>
-<form method="post">
-  <div class="mb-3"><input class="form-control" name="title" placeholder="Title" required></div>
-  <div class="mb-3"><textarea class="form-control" name="content" rows="8" placeholder="Content" required></textarea></div>
-  <button class="btn btn-primary" type="submit">Publish</button>
-</form>
+<div class="row justify-content-center">
+  <div class="col-md-8">
+    <h2 class="mb-4">Create New Post</h2>
+    <form method="post" novalidate>
+      {{ form.hidden_tag() }}
+      <div class="mb-3">
+        {{ form.title.label(class="form-label") }}
+        {{ form.title(class="form-control" + (" is-invalid" if form.title.errors else "")) }}
+        {% if form.title.errors %}
+          <div class="invalid-feedback">
+            {% for error in form.title.errors %}{{ error }}{% endfor %}
+          </div>
+        {% endif %}
+      </div>
+      <div class="mb-3">
+        {{ form.content.label(class="form-label") }}
+        {{ form.content(class="form-control" + (" is-invalid" if form.content.errors else ""), rows="10") }}
+        {% if form.content.errors %}
+          <div class="invalid-feedback">
+            {% for error in form.content.errors %}{{ error }}{% endfor %}
+          </div>
+        {% endif %}
+      </div>
+      {{ form.submit(class="btn btn-primary") }}
+      <a href="{{ url_for('main.blog') }}" class="btn btn-secondary">Cancel</a>
+    </form>
+  </div>
+</div>
 {% endblock %}

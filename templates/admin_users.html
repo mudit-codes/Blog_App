@@ -1,33 +1,65 @@
 {% extends "base.html" %}
+{% block title %}Users - Admin{% endblock %}
 {% block content %}
-<h2>Users</h2>
-<table class="table table-striped">
-  <thead><tr><th>Username</th><th>Email</th><th>Joined</th><th>Role</th><th>Actions</th></tr></thead>
-  <tbody>
-    {% for u in users %}
-    <tr>
-      <td>{{ u.username }}</td>
-      <td>{{ u.email }}</td>
-      <td>{{ u.created_at.strftime('%d %b %Y') }}</td>
-      <td>{% if u.is_admin %}<span class="badge bg-primary">Admin</span>{% else %}<span class="badge bg-secondary">User</span>{% endif %}</td>
-      <td>
-        {% if not u.is_admin %}
-          <form method="post" action="{{ url_for('admin_delete_user', user_id=u.id) }}" style="display:inline;">
-            <button class="btn btn-sm btn-danger" onclick="return confirm('Delete user?')">Delete</button>
-          </form>
-        {% else %}
-          <span class="text-muted">Protected</span>
-        {% endif %}
-        {% if current_user.is_admin and u.id != current_user.id %}
-          <form method="post" action="{{ url_for('admin_toggle_admin', user_id=u.id) }}" style="display:inline; margin-left:6px;">
-            <button class="btn btn-sm btn-outline-primary">
-              {% if u.is_admin %}Demote{% else %}Promote{% endif %}
-            </button>
-          </form>
-        {% endif %}
-      </td>
-    </tr>
+<h2 class="mb-4">User Management</h2>
+<div class="table-responsive">
+  <table class="table table-striped">
+    <thead><tr><th>Username</th><th>Email</th><th>Posts</th><th>Joined</th><th>Role</th><th>Actions</th></tr></thead>
+    <tbody>
+      {% for u in users %}
+      <tr>
+        <td>{{ u.username }}</td>
+        <td>{{ u.email }}</td>
+        <td>{{ u.post_count }}</td>
+        <td>{{ u.created_at.strftime('%d %b %Y') }}</td>
+        <td>{% if u.is_admin %}<span class="badge bg-primary">Admin</span>{% else %}<span class="badge bg-secondary">User</span>{% endif %}</td>
+        <td>
+          {% if not u.is_admin %}
+            <form method="post" action="{{ url_for('admin.delete_user', user_id=u.id) }}" style="display:inline;">
+              <button class="btn btn-sm btn-danger" onclick="return confirm('Delete user?')">Delete</button>
+            </form>
+          {% else %}
+            <span class="text-muted">Protected</span>
+          {% endif %}
+          {% if current_user.is_admin and u.id != current_user.id %}
+            <form method="post" action="{{ url_for('admin.toggle_admin', user_id=u.id) }}" style="display:inline; margin-left:6px;">
+              <button class="btn btn-sm btn-outline-primary">
+                {% if u.is_admin %}Demote{% else %}Promote{% endif %}
+              </button>
+            </form>
+          {% endif %}
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+{% if pagination %}
+<nav aria-label="Page navigation">
+  <ul class="pagination justify-content-center">
+    {% if pagination.has_prev %}
+      <li class="page-item">
+        <a class="page-link" href="{{ url_for('admin.users', page=pagination.prev_num) }}">Previous</a>
+      </li>
+    {% endif %}
+    
+    {% for page_num in pagination.iter_pages(left_edge=1, right_edge=1, left_current=2, right_current=2) %}
+      {% if page_num %}
+        <li class="page-item {% if page_num == pagination.page %}active{% endif %}">
+          <a class="page-link" href="{{ url_for('admin.users', page=page_num) }}">{{ page_num }}</a>
+        </li>
+      {% else %}
+        <li class="page-item disabled"><span class="page-link">...</span></li>
+      {% endif %}
     {% endfor %}
-  </tbody>
-</table>
+    
+    {% if pagination.has_next %}
+      <li class="page-item">
+        <a class="page-link" href="{{ url_for('admin.users', page=pagination.next_num) }}">Next</a>
+      </li>
+    {% endif %}
+  </ul>
+</nav>
+{% endif %}
 {% endblock %}

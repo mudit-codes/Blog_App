@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block title %}Blog{% endblock %}
 {% block content %}
-<h2>All Posts</h2>
+<h2 class="mb-4">All Posts</h2>
 {% for post in posts %}
   <div class="card mb-3">
     <div class="card-body">
@@ -9,10 +9,10 @@
       <p>{{ post.content[:200] }}{% if post.content|length > 200 %}...{% endif %}</p>
       <small class="text-muted">By {{ post.author.username if post.author else 'Unknown' }} • {{ post.created_at.strftime('%d %b %Y') }}</small>
       <div class="mt-2">
-        <a class="btn btn-sm btn-outline-primary" href="{{ url_for('post_view', post_id=post.id) }}">Read</a>
+        <a class="btn btn-sm btn-outline-primary" href="{{ url_for('main.post_view', post_id=post.id) }}">Read</a>
         {% if current_user.is_authenticated and (post.author == current_user or current_user.is_admin) %}
-          <a class="btn btn-sm btn-secondary" href="{{ url_for('edit', post_id=post.id) }}">Edit</a>
-          <form method="post" action="{{ url_for('delete', post_id=post.id) }}" style="display:inline;">
+          <a class="btn btn-sm btn-secondary" href="{{ url_for('main.edit', post_id=post.id) }}">Edit</a>
+          <form method="post" action="{{ url_for('main.delete', post_id=post.id) }}" style="display:inline;">
             <button class="btn btn-sm btn-danger" onclick="return confirm('Delete this post?')">Delete</button>
           </form>
         {% endif %}
@@ -22,4 +22,32 @@
 {% else %}
   <p>No posts yet.</p>
 {% endfor %}
+
+{% if pagination %}
+<nav aria-label="Page navigation">
+  <ul class="pagination justify-content-center">
+    {% if pagination.has_prev %}
+      <li class="page-item">
+        <a class="page-link" href="{{ url_for('main.blog', page=pagination.prev_num) }}">Previous</a>
+      </li>
+    {% endif %}
+    
+    {% for page_num in pagination.iter_pages(left_edge=1, right_edge=1, left_current=2, right_current=2) %}
+      {% if page_num %}
+        <li class="page-item {% if page_num == pagination.page %}active{% endif %}">
+          <a class="page-link" href="{{ url_for('main.blog', page=page_num) }}">{{ page_num }}</a>
+        </li>
+      {% else %}
+        <li class="page-item disabled"><span class="page-link">...</span></li>
+      {% endif %}
+    {% endfor %}
+    
+    {% if pagination.has_next %}
+      <li class="page-item">
+        <a class="page-link" href="{{ url_for('main.blog', page=pagination.next_num) }}">Next</a>
+      </li>
+    {% endif %}
+  </ul>
+</nav>
+{% endif %}
 {% endblock %}
