@@ -6,12 +6,14 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
 from flask_migrate import Migrate
+from flask_caching import Cache
 import os
 
 # Initialize extensions
 db = SQLAlchemy()
 login_manager = LoginManager()
 migrate = Migrate()
+cache = Cache()
 
 
 def create_app(config_name=None):
@@ -33,6 +35,14 @@ def create_app(config_name=None):
     login_manager.init_app(app)
     migrate.init_app(app, db)
     
+    # Configure caching
+    cache_config = {
+        'CACHE_TYPE': 'SimpleCache',  # Use 'RedisCache' in production
+        'CACHE_DEFAULT_TIMEOUT': 300
+    }
+    app.config.update(cache_config)
+    cache.init_app(app)
+    
     # Configure login manager
     login_manager.login_view = 'auth.login'
     login_manager.login_message = 'Please log in to access this page.'
@@ -47,6 +57,10 @@ def create_app(config_name=None):
     # Register error handlers
     from .utils import error_handlers
     error_handlers.register_error_handlers(app)
+    
+    # Configure logging
+    from .utils.logging_config import configure_logging
+    configure_logging(app)
     
     # User loader
     from .models.user import User
